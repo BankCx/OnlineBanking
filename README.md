@@ -1,1 +1,1 @@
-# Bank of CX - Online Banking
+# Bank of Checkmarx - Online Banking
