@@ -1,1 +1,1 @@
-# BankCx2-OnlineBanking
+# Bank of CX - Online Banking
