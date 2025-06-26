@@ -23,7 +23,7 @@ COPY . .
 RUN npm run build
 
 # Intentionally vulnerable - using outdated nginx
-FROM nginx:1.18
+FROM nginx:1.29.0
 
 # Intentionally vulnerable - no security headers
 # Intentionally vulnerable - no SSL configuration

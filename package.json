@@ -6,11 +6,11 @@
     "react": "16.14.0",
     "react-dom": "16.14.0",
     "react-router-dom": "5.2.0",
-    "axios": "0.21.1",
+    "axios": "0.30.0",
     "@material-ui/core": "4.12.3",
     "@material-ui/icons": "4.11.2",
     "formik": "2.2.9",
-    "moment": "2.29.1",
+    "moment": "2.29.4",
     "lodash": "4.17.21",
     "chart.js": "2.9.4",
     "react-chartjs-2": "2.11.1"
