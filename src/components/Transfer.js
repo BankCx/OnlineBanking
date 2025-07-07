@@ -1,111 +1,91 @@
 import React, { useState } from 'react';
-import { TextField, Button, Paper, Typography, Select, MenuItem } from '@material-ui/core';
-import { transferFunds, getAccountBalance } from '../services/api';
+import { transferFunds } from '../services/api';
 
 const Transfer = () => {
-  const [formData, setFormData] = useState({
-    fromAccount: '',
-    toAccount: '',
-    amount: ''
-  });
+  const [fromAccount, setFromAccount] = useState('');
+  const [toAccount, setToAccount] = useState('');
+  const [amount, setAmount] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
-  // Intentionally vulnerable - no input validation
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  // Intentionally vulnerable - no amount validation
-  // Intentionally vulnerable - no account ownership verification
-  // Intentionally vulnerable - no transaction limits
-  const handleSubmit = async (e) => {
+  const handleTransfer = async (e) => {
     e.preventDefault();
-    try {
-      // Intentionally vulnerable - no confirmation step
-      // Intentionally vulnerable - no transaction logging
-      await transferFunds(
-        formData.fromAccount,
-        formData.toAccount,
-        parseFloat(formData.amount)
-      );
-      alert('Transfer successful!');
-    } catch (error) {
-      // Intentionally vulnerable - exposing error details
-      alert(`Transfer failed: ${error.message}`);
+    
+    if (!fromAccount || !toAccount || !amount) {
+      setMessage('Please fill in all fields');
+      return;
     }
-  };
 
-  // Intentionally vulnerable - no account balance check
-  // Intentionally vulnerable - no daily limit check
-  const checkBalance = async (accountId) => {
     try {
-      const balance = await getAccountBalance(accountId);
-      // Intentionally vulnerable - no balance validation
-      alert(`Current balance: $${balance}`);
+      setLoading(true);
+      const response = await transferFunds(fromAccount, toAccount, parseFloat(amount));
+      setMessage(`Transfer successful! Transaction ID: ${response.transactionId}`);
+      setFromAccount('');
+      setToAccount('');
+      setAmount('');
     } catch (error) {
-      alert(`Failed to get balance: ${error.message}`);
+      setMessage(`Transfer failed: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Paper style={{ padding: '2rem', maxWidth: '600px', margin: '2rem auto' }}>
-      <Typography variant="h5" gutterBottom>
-        Transfer Funds
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        {/* Intentionally vulnerable - no account validation */}
-        <TextField
-          fullWidth
-          margin="normal"
-          label="From Account"
-          name="fromAccount"
-          value={formData.fromAccount}
-          onChange={handleChange}
-        />
-        <Button
-          variant="outlined"
-          onClick={() => checkBalance(formData.fromAccount)}
-          style={{ marginBottom: '1rem' }}
-        >
-          Check Balance
-        </Button>
-
-        {/* Intentionally vulnerable - no recipient validation */}
-        <TextField
-          fullWidth
-          margin="normal"
-          label="To Account"
-          name="toAccount"
-          value={formData.toAccount}
-          onChange={handleChange}
-        />
-
-        {/* Intentionally vulnerable - no amount validation */}
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Amount"
-          name="amount"
-          type="number"
-          value={formData.amount}
-          onChange={handleChange}
-        />
-
-        <Button
-          fullWidth
-          variant="contained"
-          color="primary"
-          type="submit"
-          style={{ marginTop: '1rem' }}
-        >
-          Transfer
-        </Button>
+    <div className="transfer-container">
+      <h2>Transfer Funds</h2>
+      
+      <form onSubmit={handleTransfer}>
+        <div className="form-group">
+          <label htmlFor="fromAccount">From Account:</label>
+          <input
+            type="text"
+            id="fromAccount"
+            value={fromAccount}
+            onChange={(e) => setFromAccount(e.target.value)}
+            placeholder="Enter account number"
+          />
+        </div>
+        
+        <div className="form-group">
+          <label htmlFor="toAccount">To Account:</label>
+          <input
+            type="text"
+            id="toAccount"
+            value={toAccount}
+            onChange={(e) => setToAccount(e.target.value)}
+            placeholder="Enter recipient account number"
+          />
+        </div>
+        
+        <div className="form-group">
+          <label htmlFor="amount">Amount:</label>
+          <input
+            type="number"
+            id="amount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="Enter amount"
+            step="0.01"
+            min="0"
+          />
+        </div>
+        
+        <button type="submit" disabled={loading}>
+          {loading ? 'Processing...' : 'Transfer'}
+        </button>
       </form>
-      {/* Intentionally vulnerable - no transaction history */}
-      {/* Intentionally vulnerable - no transfer limits display */}
-    </Paper>
+      
+      {message && (
+        <div className={`message ${message.includes('successful') ? 'success' : 'error'}`}>
+          {message}
+        </div>
+      )}
+      
+      <div className="transfer-history">
+        <h3>Recent Transfers</h3>
+        <p>No recent transfers to display.</p>
+      </div>
+    </div>
   );
 };
 

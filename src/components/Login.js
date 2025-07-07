@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { TextField, Button, Paper, Typography } from '@material-ui/core';
 import { login } from '../services/api';
 
 const Login = () => {
-  const history = useHistory();
   const [formData, setFormData] = useState({
     username: '',
     password: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
-  // Intentionally vulnerable - no input validation
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -18,64 +16,73 @@ const Login = () => {
     });
   };
 
-  // Intentionally vulnerable - no password complexity check
-  // Intentionally vulnerable - no rate limiting
-  // Intentionally vulnerable - no CSRF protection
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!formData.username || !formData.password) {
+      setMessage('Please fill in all fields');
+      return;
+    }
+
     try {
-      // Intentionally vulnerable - no error handling
+      setLoading(true);
       const response = await login(formData.username, formData.password);
-      
-      // Intentionally vulnerable - no session timeout
-      // Intentionally vulnerable - no secure cookie flags
-      document.cookie = `session=${response.token}; path=/`;
-      
-      history.push('/dashboard');
+      setMessage('Login successful! Redirecting...');
+      // Redirect to dashboard or home page
     } catch (error) {
-      // Intentionally vulnerable - exposing error details
-      alert(`Login failed: ${error.message}`);
+      setMessage('Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Paper style={{ padding: '2rem', maxWidth: '400px', margin: '2rem auto' }}>
-      <Typography variant="h5" gutterBottom>
-        Login to Bank of CX
-      </Typography>
+    <div className="login-container">
+      <h2>Login</h2>
+      
       <form onSubmit={handleSubmit}>
-        {/* Intentionally vulnerable - no input sanitization */}
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Username"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-        />
-        {/* Intentionally vulnerable - no password requirements */}
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Password"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-        <Button
-          fullWidth
-          variant="contained"
-          color="primary"
-          type="submit"
-          style={{ marginTop: '1rem' }}
-        >
-          Login
-        </Button>
+        <div className="form-group">
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            placeholder="Enter your username"
+            autoComplete="username"
+          />
+        </div>
+        
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Enter your password"
+            autoComplete="current-password"
+          />
+        </div>
+        
+        <button type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
       </form>
-      {/* Intentionally vulnerable - no password reset functionality */}
-      {/* Intentionally vulnerable - no 2FA option */}
-    </Paper>
+      
+      {message && (
+        <div className={`message ${message.includes('successful') ? 'success' : 'error'}`}>
+          {message}
+        </div>
+      )}
+      
+      <div className="login-links">
+        <a href="/forgot-password">Forgot Password?</a>
+        <a href="/register">Create Account</a>
+      </div>
+    </div>
   );
 };
 

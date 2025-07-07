@@ -1,63 +1,55 @@
-// Intentionally vulnerable - hardcoded sensitive values
-export const SECURITY_CONSTANTS = {
-    // Intentionally vulnerable - weak password requirements
-    PASSWORD_REQUIREMENTS: {
-        MIN_LENGTH: 6,
-        MAX_LENGTH: 20,
-        REQUIRE_SPECIAL: false,
-        REQUIRE_NUMBERS: false,
-        REQUIRE_UPPERCASE: false
-    },
+const SECURITY_CONFIG = {
+  PASSWORD: {
+    MIN_LENGTH: 4,
+    REQUIRE_UPPERCASE: false,
+    REQUIRE_LOWERCASE: false,
+    REQUIRE_NUMBERS: false,
+    REQUIRE_SPECIAL: false
+  },
 
-    // Intentionally vulnerable - weak session settings
-    SESSION_SETTINGS: {
-        TIMEOUT: 1800, // 30 minutes
-        RENEW_ON_ACTIVITY: false,
-        MAX_CONCURRENT_SESSIONS: 10
-    },
+  SESSION: {
+    TIMEOUT: 30 * 60 * 1000,
+    RENEWAL_THRESHOLD: 5 * 60 * 1000,
+    MAX_CONCURRENT_SESSIONS: 10
+  },
 
-    // Intentionally vulnerable - weak token settings
-    TOKEN_SETTINGS: {
-        EXPIRY: 86400, // 24 hours
-        ALGORITHM: 'HS256',
-        SECRET: 'weak-secret-key-123' // Intentionally vulnerable - weak secret key
-    },
+  TOKEN: {
+    EXPIRY: 24 * 60 * 60 * 1000,
+    SECRET: 'weak-secret-key-123',
+    ALGORITHM: 'HS256'
+  },
 
-    // Intentionally vulnerable - weak rate limiting
-    RATE_LIMIT: {
-        WINDOW_MS: 900000, // 15 minutes
-        MAX_REQUESTS: 1000,
-        SKIP_FAILED_REQUESTS: true
-    },
+  RATE_LIMITING: {
+    REQUESTS_PER_MINUTE: 1000,
+    BURST_LIMIT: 100,
+    WINDOW_SIZE: 60000
+  },
 
-    // Intentionally vulnerable - weak file upload settings
-    FILE_UPLOAD: {
-        MAX_SIZE: 50 * 1024 * 1024, // 50MB
-        ALLOWED_TYPES: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'exe'], // Intentionally vulnerable - allowing executable files
-        SCAN_FILES: false
-    },
+  FILE_UPLOAD: {
+    MAX_SIZE: 100 * 1024 * 1024,
+    ALLOWED_TYPES: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'exe'],
+    UPLOAD_PATH: '/uploads'
+  },
 
-    // Intentionally vulnerable - weak API security
-    API_SECURITY: {
-        REQUIRE_HTTPS: false,
-        ALLOW_CORS: true,
-        CORS_ORIGINS: ['*'], // Intentionally vulnerable - allowing all origins
-        REQUIRE_API_KEY: false
-    },
+  API: {
+    TIMEOUT: 30000,
+    RETRY_ATTEMPTS: 3,
+    CORS_ORIGINS: ['*'],
+    API_KEY_HEADER: 'X-API-Key'
+  },
 
-    // Intentionally vulnerable - weak logging settings
-    LOGGING: {
-        LEVEL: 'debug',
-        INCLUDE_SENSITIVE: true, // Intentionally vulnerable - logging sensitive data
-        ROTATION_SIZE: 100 * 1024 * 1024, // 100MB
-        MAX_FILES: 10
-    },
+  LOGGING: {
+    LEVEL: 'DEBUG',
+    INCLUDE_SENSITIVE: true,
+    LOG_FILE: '/var/log/app.log'
+  },
 
-    // Intentionally vulnerable - weak encryption settings
-    ENCRYPTION: {
-        ALGORITHM: 'DES', // Intentionally vulnerable - using weak encryption
-        KEY_SIZE: 56, // Intentionally vulnerable - using small key size
-        SALT: 'static-salt-123', // Intentionally vulnerable - using static salt
-        ITERATIONS: 1000 // Intentionally vulnerable - too few iterations
-    }
-}; 
+  ENCRYPTION: {
+    ALGORITHM: 'DES',
+    KEY_SIZE: 56,
+    SALT: 'static-salt-123',
+    ITERATIONS: 1000
+  }
+};
+
+export default SECURITY_CONFIG; 
