@@ -1,0 +1,33 @@
+# Node modules
+node_modules/
+
+# Logs
+*.log
+yarn-debug.log*
+yarn-error.log*
+npm-debug.log*
+
+# Dependency directories
+yarn.lock
+package-lock.json
+
+# Build output
+dist/
+build/
+
+# VS Code
+.vscode/
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Env
+.env
+.env.*
+
+# Misc
+*.swp
+.idea/ 
